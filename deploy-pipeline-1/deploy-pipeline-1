@@ -1,2 +1,7 @@
 pipeline {
+   node ('docker-agent') {
+   stage ('test-build-1 - Checkout') {
+ 	 checkout([$class: 'GitSCM', branches: [[name: '**']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '', url: 'https://github.com/jpikoulas/baseimage']]]) 
+	}
+   }
 }
