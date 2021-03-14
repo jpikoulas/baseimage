@@ -1,9 +1,24 @@
 pipeline {
-   node ('docker-agent') {
-   stages{
-       stage ('test-build-1 - Checkout') {
- 	   checkout([$class: 'GitSCM', branches: [[name: '**']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '', url: 'https://github.com/jpikoulas/baseimage']]]) 
-       }
-   }
-   }
+    agent { label ('docker-python-agent') }
+      environment {
+	  GITURL="https://github.com/jpikoulas/baseimage"
+	  BUILD_TAG="${env.JOB_NAME}-${env.BUILD_NUMBER}"
+    }
+    stages {
+        stage ('checkout') {
+            steps{
+ 	            checkout([$class: 'GitSCM', 
+ 	            branches: [[name: '**']], 
+ 	            doGenerateSubmoduleConfigurations: false, extensions: [], 
+ 	            submoduleCfg: [], 
+ 	            userRemoteConfigs: [[credentialsId: '', 
+ 	            url: "${GITURL}" ]]])
+            }
+	    }
+	    stage('build') {
+	        steps {
+                sh 'docker build . -t ${BUILD_TAG}'
+            }
+        }
+    }
 }
