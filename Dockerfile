@@ -1,1 +1,3 @@
-FROM FROM debian:10
+FROM debian:10
+
+RUN apt update
